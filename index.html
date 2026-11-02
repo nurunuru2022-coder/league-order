@@ -212,6 +212,7 @@ const today = () => {
 let state = load() || { date: today(), games: blankGames(), members: [], prices: defaultPrices() };
 const teamMembers = membersFromUrl();
 if (teamMembers) state.members = teamMembers;
+state.date = today(); // 試合日は開くたびに今日にする
 
 // メンバー名は公開ページに書かず、配るURLの # 以降に入れる（# 以降はサーバーへ送られない）
 function membersToHash(names) {
