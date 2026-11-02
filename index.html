@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>リーグのオーダー表</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Oswald:wght@500&display=swap">
+<style>
+/* 上から「コスト→試合→送る文面」。スマホで片手入力、送るボタンは常に画面下 */
+:root {
+  --bg: #eef2f0; --panel: #ffffff; --ink: #18211e; --sub: #5c6b65; --line: #d3dcd8;
+  --green: #0f6b4f; --green-ink: #ffffff; --red: #c0352b; --soft: #e1ebe6; --warn-bg: #fbe9e6;
+  --jp: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --num: "Oswald", "BIZ UDPGothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121a17; --panel: #1b2622; --ink: #e8efec; --sub: #9aaaa3; --line: #31403a;
+    --green: #2fa57f; --green-ink: #06140f; --red: #ef7468; --soft: #243430; --warn-bg: #3a2320;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121a17; --panel: #1b2622; --ink: #e8efec; --sub: #9aaaa3; --line: #31403a;
+  --green: #2fa57f; --green-ink: #06140f; --red: #ef7468; --soft: #243430; --warn-bg: #3a2320;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--jp); font-size: 16px; line-height: 1.5; }
+.wrap {
+  max-width: 640px; margin: 0 auto; display: grid; gap: 20px;
+  padding-block: 20px 110px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+h1 { margin: 0; font-size: 22px; }
+h2 { margin: 0 0 8px; font-size: 15px; color: var(--sub); font-weight: 700; }
+label.date { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--sub); }
+input, select, textarea, button { font: inherit; color: var(--ink); }
+input, select { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 9px 8px; min-height: 44px; width: 100%; min-width: 0; }
+label.date input { width: auto; }
+:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
+
+.notice { background: var(--soft); border-radius: 6px; padding: 10px 12px; font-size: 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+
+.costs { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 8px; }
+.cost { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+.cost b { display: block; font-size: 13px; font-weight: 400; color: var(--sub); overflow-wrap: anywhere; }
+.cost span { font-family: var(--num); font-size: 24px; font-variant-numeric: tabular-nums; }
+.cost small { display: block; font-size: 12px; color: var(--sub); }
+.total { margin: 8px 0 0; text-align: right; font-size: 14px; color: var(--sub); font-variant-numeric: tabular-nums; }
+
+.games { display: grid; gap: 8px; }
+.game { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--green); padding: 10px 12px; display: grid; gap: 8px; }
+.game.bad { border-left-color: var(--red); background: var(--warn-bg); }
+.game-head { display: flex; align-items: baseline; gap: 8px; }
+.game-no { font-family: var(--num); color: var(--sub); font-variant-numeric: tabular-nums; min-width: 1.6em; }
+.game-name { font-weight: 700; flex: 1; min-width: 0; }
+.game-price { font-size: 13px; color: var(--sub); white-space: nowrap; }
+.slots { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+.slot { display: grid; gap: 4px; min-width: 0; }
+.dup { margin: 0; font-size: 13px; color: var(--red); }
+
+.preview { width: 100%; min-height: 220px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px; resize: vertical; font-size: 14px; line-height: 1.6; }
+
+details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+summary { cursor: pointer; font-weight: 700; min-height: 28px; }
+.settings { display: grid; gap: 16px; padding-top: 12px; }
+.prices { display: grid; gap: 8px; }
+.price { display: grid; grid-template-columns: 1fr 96px; gap: 8px; align-items: center; font-size: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0 0 8px; padding: 0; }
+.chips li { display: flex; align-items: center; gap: 4px; background: var(--soft); border-radius: 6px; padding: 2px 2px 2px 10px; font-size: 14px; }
+.add { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+
+button { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 8px 12px; min-height: 44px; cursor: pointer; }
+button.x { border: 0; background: none; min-height: 36px; min-width: 36px; padding: 0; color: var(--sub); }
+.clear { justify-self: start; }
+
+.bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  background: var(--panel); border-top: 1px solid var(--line);
+  padding-top: 10px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.bar-in { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+.send { display: flex; align-items: center; justify-content: center; min-height: 46px; border-radius: 6px; background: var(--green); color: var(--green-ink); font-weight: 700; text-decoration: none; text-align: center; padding: 8px; }
+.status { grid-column: 1 / -1; font-size: 13px; color: var(--sub); }
+.status.bad { color: var(--red); }
+</style>
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <h1>リーグのオーダー表</h1>
+    <label class="date">試合日 <input type="date" id="date"></label>
+  </header>
+
+  <div class="notice" id="noMembers" hidden>
+    <span>メンバーが入っていません。チームLINEのURLから開くか、下の「単価とメンバーを変える」で追加してください。</span>
+  </div>
+
+  <section aria-label="各人のコスト">
+    <h2>コスト</h2>
+    <div class="costs" id="costs"></div>
+    <p class="total" id="total"></p>
+  </section>
+
+  <section aria-label="オーダー">
+    <h2>オーダー</h2>
+    <div class="games" id="games"></div>
+  </section>
+
+  <section aria-label="送る文面">
+    <h2>送る文面</h2>
+    <textarea class="preview" id="preview" readonly></textarea>
+  </section>
+
+  <details>
+    <summary>単価とメンバーを変える</summary>
+    <div class="settings">
+      <div>
+        <h2>1人あたりの単価（円）</h2>
+        <div class="prices" id="prices"></div>
+      </div>
+      <div>
+        <h2>プルダウンに出すメンバー</h2>
+        <ul class="chips" id="members"></ul>
+        <form class="add" id="addMember">
+          <input id="newMember" placeholder="名前を入れて追加" aria-label="追加するメンバーの名前">
+          <button type="submit">追加</button>
+        </form>
+      </div>
+      <div>
+        <h2>チームに配るURL</h2>
+        <button type="button" id="teamUrl">今のメンバー入りのURLをコピー</button>
+      </div>
+    </div>
+  </details>
+
+  <button type="button" class="clear" id="clearAll">オーダーを空にする</button>
+</div>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="status" id="status" role="status"></div>
+    <a class="send" id="send" href="#" target="_blank" rel="noopener">LINEで送る</a>
+    <button type="button" id="copy">文面をコピー</button>
+  </div>
+</div>
+
+<script>
+const FORMATS = {
+  T: { name: 'トリオス901', players: 3, price: 100 },
+  D: { name: 'ダブルス501', players: 2, price: 100 },
+  C: { name: 'ダブルスクリケット', players: 2, price: 100 },
+  F: { name: 'フリーズ', players: 2, price: 200 },
+  S: { name: 'シングルス501', players: 1, price: 200 },
+  K: { name: 'シングルスクリケット', players: 1, price: 200 },
+};
+const ORDER = ['T', 'D', 'C', 'D', 'C', 'F', 'S', 'K', 'S', 'K', 'F', 'S', 'K', 'S', 'K'];
+const KEY = 'darts-order-v1';
+const FREE = '__free';
+
+const blankGames = () => ORDER.map(f => Array(FORMATS[f].players).fill(''));
+const defaultPrices = () => Object.fromEntries(Object.entries(FORMATS).map(([k, v]) => [k, v.price]));
+
+const today = () => {
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+};
+
+let state = load() || { date: today(), games: blankGames(), members: [], prices: defaultPrices() };
+const teamMembers = membersFromUrl();
+if (teamMembers) state.members = teamMembers;
+
+// メンバー名は公開ページに書かず、配るURLの # 以降に入れる（# 以降はサーバーへ送られない）
+function membersToHash(names) {
+  const bytes = new TextEncoder().encode(JSON.stringify(names));
+  const b64 = btoa(String.fromCharCode(...bytes));
+  return 'm=' + b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function membersFromUrl() {
+  const m = location.hash.match(/^#m=([\w-]+)$/);
+  if (!m) return null;
+  try {
+    const bin = atob(m[1].replace(/-/g, '+').replace(/_/g, '/'));
+    const names = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
+    return Array.isArray(names) ? names.map(String) : null;
+  } catch { return null; }
+}
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY));
+    return s && s.games && s.games.length === ORDER.length ? s : null;
+  } catch { return null; }
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+}
+
+function costs() {
+  const out = new Map(state.members.map(n => [n, { yen: 0, games: 0 }]));
+  state.games.forEach((names, i) => {
+    const price = Number(state.prices[ORDER[i]]) || 0;
+    new Set(names.map(n => n.trim()).filter(Boolean)).forEach(n => {
+      const c = out.get(n) || { yen: 0, games: 0 };
+      c.yen += price; c.games += 1;
+      out.set(n, c);
+    });
+  });
+  return out;
+}
+
+function dateLabel() {
+  if (!state.date) return '';
+  const [, m, d] = state.date.split('-').map(Number);
+  return `${m}/${d} `;
+}
+
+function message() {
+  const lines = [`${dateLabel()}リーグ`];
+  state.games.forEach((names, i) => {
+    const single = FORMATS[ORDER[i]].players === 1;
+    const prevSingle = i > 0 && FORMATS[ORDER[i - 1]].players === 1;
+    if (!(single && prevSingle)) lines.push('');
+    lines.push(FORMATS[ORDER[i]].name, ...names.map(n => n.trim() || '（未定）'));
+  });
+  const played = [...costs()].filter(([, c]) => c.games > 0);
+  lines.push('', 'コスト', ...played.map(([n, c]) => `${n} ${c.yen}`));
+  return lines.join('\n');
+}
+
+function el(tag, props = {}, ...kids) {
+  const e = Object.assign(document.createElement(tag), props);
+  e.append(...kids);
+  return e;
+}
+
+function renderSlot(i, j) {
+  const name = state.games[i][j];
+  const free = name !== '' && !state.members.includes(name);
+  const select = el('select', { id: `s${i}-${j}`, ariaLabel: `${i + 1}試合目 ${j + 1}人目` });
+  select.append(el('option', { value: '', textContent: '選ぶ' }));
+  state.members.forEach(n => select.append(el('option', { value: n, textContent: n })));
+  select.append(el('option', { value: FREE, textContent: '自由記名' }));
+  select.value = free ? FREE : name;
+
+  const input = el('input', { id: `f${i}-${j}`, value: free ? name : '', placeholder: '名前を入力', hidden: !free, ariaLabel: `${i + 1}試合目 ${j + 1}人目の名前` });
+  select.addEventListener('change', () => {
+    input.hidden = select.value !== FREE;
+    state.games[i][j] = select.value === FREE ? input.value.trim() : select.value;
+    if (select.value === FREE) input.focus();
+    changed();
+  });
+  input.addEventListener('input', () => { state.games[i][j] = input.value.trim(); changed(); });
+  return el('div', { className: 'slot' }, select, input);
+}
+
+function renderGames() {
+  const root = document.getElementById('games');
+  root.replaceChildren(...ORDER.map((f, i) => {
+    const head = el('div', { className: 'game-head' },
+      el('span', { className: 'game-no', textContent: i + 1 }),
+      el('span', { className: 'game-name', textContent: FORMATS[f].name }),
+      el('span', { className: 'game-price', id: `p${i}` }));
+    const slots = el('div', { className: 'slots' });
+    state.games[i].forEach((_, j) => slots.append(renderSlot(i, j)));
+    const dup = el('p', { className: 'dup', id: `d${i}`, hidden: true, textContent: '同じ人が2回入っています' });
+    return el('div', { className: 'game', id: `g${i}` }, head, slots, dup);
+  }));
+}
+
+function renderCosts() {
+  const c = costs();
+  document.getElementById('costs').replaceChildren(...[...c].map(([n, v]) =>
+    el('div', { className: 'cost' },
+      el('b', { textContent: n }),
+      el('span', { textContent: v.yen.toLocaleString() }),
+      el('small', { textContent: `${v.games}試合` }))));
+  const sum = [...c.values()].reduce((a, v) => a + v.yen, 0);
+  document.getElementById('total').textContent = `合計 ${sum.toLocaleString()}円`;
+}
+
+function renderChecks() {
+  let empty = 0, dups = 0;
+  state.games.forEach((names, i) => {
+    const filled = names.map(n => n.trim()).filter(Boolean);
+    empty += names.length - filled.length;
+    const dup = new Set(filled).size !== filled.length;
+    if (dup) dups++;
+    document.getElementById(`g${i}`).classList.toggle('bad', dup);
+    document.getElementById(`d${i}`).hidden = !dup;
+    document.getElementById(`p${i}`).textContent = `1人${Number(state.prices[ORDER[i]]) || 0}円`;
+  });
+  const s = document.getElementById('status');
+  s.textContent = dups ? `同じ人が2回入っている試合が${dups}つあります`
+    : empty ? `まだ${empty}枠あいています` : '全員そろいました';
+  s.classList.toggle('bad', dups > 0);
+}
+
+function renderPreview() {
+  const text = message();
+  document.getElementById('preview').value = text;
+  document.getElementById('send').href = 'https://line.me/R/share?text=' + encodeURIComponent(text);
+}
+
+function renderSettings() {
+  document.getElementById('prices').replaceChildren(...Object.entries(FORMATS).map(([k, f]) => {
+    const input = el('input', { id: `price-${k}`, type: 'number', min: 0, step: 10, inputMode: 'numeric', value: state.prices[k] });
+    input.addEventListener('input', () => { state.prices[k] = Number(input.value) || 0; changed(); });
+    return el('label', { className: 'price' }, f.name, input);
+  }));
+  document.getElementById('members').replaceChildren(...state.members.map(n => {
+    const x = el('button', { type: 'button', className: 'x', textContent: '×', ariaLabel: `${n}を外す` });
+    x.addEventListener('click', () => {
+      state.members = state.members.filter(m => m !== n);
+      save(); renderAll();
+    });
+    return el('li', {}, n, x);
+  }));
+}
+
+function changed() {
+  save();
+  renderCosts(); renderChecks(); renderPreview();
+}
+
+function renderAll() {
+  document.getElementById('date').value = state.date;
+  document.getElementById('noMembers').hidden = state.members.length > 0;
+  renderGames(); renderSettings(); changed();
+}
+
+function clearOrder() {
+  state.games = blankGames();
+  renderAll();
+}
+
+document.getElementById('date').addEventListener('change', e => { state.date = e.target.value; changed(); });
+
+document.getElementById('teamUrl').addEventListener('click', async e => {
+  const btn = e.currentTarget;
+  const url = location.href.split('#')[0] + '#' + membersToHash(state.members);
+  try {
+    await navigator.clipboard.writeText(url);
+    btn.textContent = 'コピーしました';
+  } catch {
+    btn.textContent = url;
+  }
+});
+
+const clearAll = document.getElementById('clearAll');
+let armed = null;
+clearAll.addEventListener('click', () => {
+  if (armed) { clearTimeout(armed); armed = null; clearAll.textContent = 'オーダーを空にする'; clearOrder(); return; }
+  clearAll.textContent = 'もう一度押すと消えます';
+  armed = setTimeout(() => { armed = null; clearAll.textContent = 'オーダーを空にする'; }, 4000);
+});
+
+document.getElementById('addMember').addEventListener('submit', e => {
+  e.preventDefault();
+  const input = document.getElementById('newMember');
+  const name = input.value.trim();
+  if (name && name !== FREE && !state.members.includes(name)) state.members.push(name);
+  input.value = '';
+  save(); renderAll();
+});
+
+document.getElementById('copy').addEventListener('click', async e => {
+  const btn = e.currentTarget;
+  try {
+    await navigator.clipboard.writeText(message());
+    btn.textContent = 'コピーしました';
+  } catch {
+    const p = document.getElementById('preview');
+    p.focus(); p.select();
+    btn.textContent = '選択しました';
+  }
+  setTimeout(() => { btn.textContent = '文面をコピー'; }, 2000);
+});
+
+renderAll();
+</script>
+</body>
+</html>
