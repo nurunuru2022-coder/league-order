@@ -95,7 +95,7 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
 /* 送るボタン: JAPAN ELITE 360 風。白地に赤と青の煙が右へ流れ、ダーツが風を切って飛ぶ。文字は斜体の太字で赤・青・黒 */
 .send {
   position: relative; display: flex; align-items: center; justify-content: center; gap: .35em;
-  min-height: 52px; border-radius: 6px; overflow: hidden; text-decoration: none; padding: 8px 20px;
+  min-height: 52px; border-radius: 6px; overflow: hidden; text-decoration: none; padding: 8px 56px 8px 16px;
   border: 1px solid var(--line);
   background:
     radial-gradient(60% 120% at 100% 50%, rgba(228, 35, 43, .55), transparent 70%),
@@ -113,7 +113,7 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
 }
 .send .dart {
   /* 飛ぶダーツ（左向き、右から流れてくる） */
-  position: absolute; right: 10px; top: 50%; width: 46px; height: 10px; transform: translateY(-50%) rotate(-8deg);
+  position: absolute; right: 8px; top: 50%; width: 40px; height: 10px; transform: translateY(-50%) rotate(-8deg);
   animation: fly 1.6s ease-in-out infinite;
 }
 .send .dart::before { content: ""; position: absolute; left: 0; top: 4px; width: 32px; height: 2px; background: #1c1c1c; }
