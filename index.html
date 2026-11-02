@@ -83,7 +83,7 @@ summary { cursor: pointer; font-weight: 700; min-height: 28px; }
 
 button { border: 1px solid var(--black); background: var(--panel); border-radius: 999px; padding: 8px 16px; min-height: 44px; cursor: pointer; font-weight: 700; overflow-wrap: anywhere; }
 button.x { border: 0; background: none; min-height: 36px; min-width: 36px; padding: 0; color: var(--sub); font-weight: 400; }
-.clear { justify-self: start; }
+.clear { margin-left: auto; background: transparent; border-color: #fff; color: #fff; white-space: nowrap; }
 
 .bar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
@@ -118,7 +118,7 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
 <div class="wrap">
   <header>
     <div class="logo"><h1>LEAGUE ORDER</h1></div>
-    <div class="bar-date"><label class="date">試合日 <input type="date" id="date"></label></div>
+    <div class="bar-date"><label class="date">試合日 <input type="date" id="date"></label><button type="button" class="clear" id="clearAll">リセット</button></div>
   </header>
 
   <div class="notice" id="noMembers" hidden>
@@ -157,7 +157,6 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
     </div>
   </details>
 
-  <button type="button" class="clear" id="clearAll">オーダーを空にする</button>
 </div>
 
 <div class="bar">
@@ -391,9 +390,9 @@ document.getElementById('teamUrl').addEventListener('click', async e => {
 const clearAll = document.getElementById('clearAll');
 let armed = null;
 clearAll.addEventListener('click', () => {
-  if (armed) { clearTimeout(armed); armed = null; clearAll.textContent = 'オーダーを空にする'; clearOrder(); return; }
-  clearAll.textContent = 'もう一度押すと消えます';
-  armed = setTimeout(() => { armed = null; clearAll.textContent = 'オーダーを空にする'; }, 4000);
+  if (armed) { clearTimeout(armed); armed = null; clearAll.textContent = 'リセット'; clearOrder(); return; }
+  clearAll.textContent = 'もう一度押す';
+  armed = setTimeout(() => { armed = null; clearAll.textContent = 'リセット'; }, 4000);
 });
 
 document.getElementById('addMember').addEventListener('submit', e => {
