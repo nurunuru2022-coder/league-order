@@ -312,7 +312,7 @@ function renderCosts() {
   document.getElementById('costs').replaceChildren(...sorted.map(([n, v]) =>
     el('div', { className: v.games ? 'row' : 'row off' },
       el('b', { textContent: n }),
-      el('span', { className: 'row-games', textContent: `{v.games}試合` }))));
+      el('span', { className: 'row-games', textContent: `${v.games}試合` }))));
 }
 
 function renderChecks() {
