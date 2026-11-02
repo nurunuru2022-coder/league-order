@@ -20,7 +20,7 @@
 body { background: var(--bg); color: var(--ink); font-family: var(--jp); font-size: 16px; line-height: 1.5; }
 .wrap {
   max-width: 640px; margin: 0 auto; display: grid; gap: 24px;
-  padding-block: 0 120px;
+  padding-block: 0 170px;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
@@ -96,6 +96,22 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
 .bar-in { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
 /* 送るボタン: LINEの緑 */
 .send { display: flex; align-items: center; justify-content: center; min-height: 50px; border-radius: 999px; background: #06C755; color: #fff; font-weight: 700; font-size: 17px; text-decoration: none; text-align: center; padding: 8px 20px; }
+.sheet { grid-column: 1 / -1; max-height: 55vh; overflow-y: auto; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.sheet-total { font-weight: 700; padding-bottom: 6px; }
+.row { display: grid; grid-template-columns: 1fr auto 72px; gap: 4px 12px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
+.row b { min-width: 0; overflow-wrap: anywhere; }
+.row-games { font-size: 14px; }
+.row-yen { font-family: var(--num); color: var(--red); text-align: right; font-variant-numeric: tabular-nums; }
+.row.off { opacity: .45; }
+.row.off .row-yen { color: var(--sub); }
+.chips-g { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px; }
+.chips-g:empty { display: none; }
+.sheet .chip { background: var(--c); box-shadow: none; color: #fff; font-size: 12px; padding: 1px 6px; border-radius: 3px; }
+.tally { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 6px 12px; border: 0; border-radius: 4px; background: var(--black); color: #fff; font-weight: 400; text-align: left; }
+.tally-names { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
+.tally-sum { font-family: var(--num); white-space: nowrap; }
+.tally-sum::after { content: " ▲"; font-size: 11px; }
+.tally[aria-expanded="true"] .tally-sum::after { content: " ▼"; }
 .status { grid-column: 1 / -1; font-size: 13px; color: var(--sub); }
 .status.bad { color: var(--red); font-weight: 700; }
 </style>
@@ -113,12 +129,6 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
   <div class="notice" id="noMembers" hidden>
     <span>メンバーが入っていません。チームLINEのURLから開くか、下の「単価とメンバーを変える」で追加してください。</span>
   </div>
-
-  <section aria-label="各人のコスト">
-    <h2>Cost</h2>
-    <div class="costs" id="costs"></div>
-    <p class="total" id="total"></p>
-  </section>
 
   <section aria-label="オーダー">
     <h2>Order</h2>
@@ -157,6 +167,14 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
 
 <div class="bar">
   <div class="bar-in">
+    <div class="sheet" id="sheet" hidden>
+      <div class="sheet-total" id="total"></div>
+      <div id="costs"></div>
+    </div>
+    <button type="button" class="tally" id="tally" aria-expanded="false" aria-controls="sheet">
+      <span class="tally-names" id="tallyNames"></span>
+      <span class="tally-sum" id="tallySum"></span>
+    </button>
     <div class="status" id="status" role="status"></div>
     <a class="send" id="send" href="#" target="_blank" rel="noopener">LINEで送る</a>
     <button type="button" id="copy">文面をコピー</button>
@@ -216,12 +234,12 @@ function save() {
 }
 
 function costs() {
-  const out = new Map(state.members.map(n => [n, { yen: 0, games: 0 }]));
+  const out = new Map(state.members.map(n => [n, { yen: 0, games: 0, list: [] }]));
   state.games.forEach((names, i) => {
     const price = Number(state.prices[ORDER[i]]) || 0;
     new Set(names.map(n => n.trim()).filter(Boolean)).forEach(n => {
-      const c = out.get(n) || { yen: 0, games: 0 };
-      c.yen += price; c.games += 1;
+      const c = out.get(n) || { yen: 0, games: 0, list: [] };
+      c.yen += price; c.games += 1; c.list.push(i);
       out.set(n, c);
     });
   });
@@ -288,18 +306,22 @@ function renderGames() {
 }
 
 function renderCosts() {
-  const c = costs();
-  // 試合数の多い順（同数なら登録順のまま）。0試合の人も出してグレーにする
-  const sorted = [...c].sort((a, b) => b[1].games - a[1].games);
+  // 試合数の多い順（同数なら登録順のまま）。0試合の人も一覧には出してグレーにする
+  const sorted = [...costs()].sort((a, b) => b[1].games - a[1].games);
+  const sum = sorted.reduce((a, [, v]) => a + v.yen, 0);
+  const played = sorted.filter(([, v]) => v.games > 0);
+  document.getElementById('tallyNames').textContent =
+    played.map(([n, v]) => `${n} ${v.games}`).join('　') || 'まだ誰も入っていません';
+  document.getElementById('tallySum').textContent = `${sum.toLocaleString()}円`;
+  document.getElementById('total').textContent = `合計 ${sum.toLocaleString()}円（${played.length}人）`;
   document.getElementById('costs').replaceChildren(...sorted.map(([n, v]) =>
-    el('div', { className: v.games ? 'cost' : 'cost off' },
+    el('div', { className: v.games ? 'row' : 'row off' },
       el('b', { textContent: n }),
-      el('span', { textContent: v.yen.toLocaleString() }),
-      el('small', { textContent: `${v.games}試合` }))));
-  const sum = [...c.values()].reduce((a, v) => a + v.yen, 0);
-  document.getElementById('total').textContent = `合計 ${sum.toLocaleString()}円`;
+      el('span', { className: 'row-games', textContent: `${v.games}試合` }),
+      el('span', { className: 'row-yen', textContent: `${v.yen.toLocaleString()}円` }),
+      el('div', { className: 'chips-g' }, ...v.list.map(i =>
+        el('span', { className: `chip fmt-${ORDER[i]}`, textContent: `${i + 1} ${FORMATS[ORDER[i]].name}` }))))));
 }
-
 function renderChecks() {
   let empty = 0, dups = 0;
   state.games.forEach((names, i) => {
@@ -355,6 +377,11 @@ function clearOrder() {
   renderAll();
 }
 
+document.getElementById('tally').addEventListener('click', e => {
+  const sheet = document.getElementById('sheet');
+  sheet.hidden = !sheet.hidden;
+  e.currentTarget.setAttribute('aria-expanded', String(!sheet.hidden));
+});
 document.getElementById('date').addEventListener('change', e => { state.date = e.target.value; changed(); });
 
 document.getElementById('teamUrl').addEventListener('click', async e => {
