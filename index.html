@@ -98,16 +98,11 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
 .send { display: flex; align-items: center; justify-content: center; min-height: 50px; border-radius: 999px; background: #06C755; color: #fff; font-weight: 700; font-size: 17px; text-decoration: none; text-align: center; padding: 8px 20px; }
 .sheet { grid-column: 1 / -1; max-height: 55vh; overflow-y: auto; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
 .sheet-total { font-weight: 700; padding-bottom: 6px; }
-.row { display: grid; grid-template-columns: 1fr auto 72px; gap: 4px 12px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
+.row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); }
 .row b { min-width: 0; overflow-wrap: anywhere; }
 .row-games { font-size: 14px; }
-.row-yen { font-family: var(--num); color: var(--red); text-align: right; font-variant-numeric: tabular-nums; }
 .row.off { opacity: .45; }
-.row.off .row-yen { color: var(--sub); }
-.chips-g { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px; }
-.chips-g:empty { display: none; }
-.sheet .chip { background: var(--c); box-shadow: none; color: #fff; font-size: 12px; padding: 1px 6px; border-radius: 3px; }
-.tally { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 6px 12px; border: 0; border-radius: 4px; background: var(--black); color: #fff; font-weight: 400; text-align: left; }
+.row.off .tally { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 6px 12px; border: 0; border-radius: 4px; background: var(--black); color: #fff; font-weight: 400; text-align: left; }
 .tally-names { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
 .tally-sum { font-family: var(--num); white-space: nowrap; }
 .tally-sum::after { content: " ▲"; font-size: 11px; }
@@ -234,12 +229,12 @@ function save() {
 }
 
 function costs() {
-  const out = new Map(state.members.map(n => [n, { yen: 0, games: 0, list: [] }]));
+  const out = new Map(state.members.map(n => [n, { yen: 0, games: 0 }]));
   state.games.forEach((names, i) => {
     const price = Number(state.prices[ORDER[i]]) || 0;
     new Set(names.map(n => n.trim()).filter(Boolean)).forEach(n => {
-      const c = out.get(n) || { yen: 0, games: 0, list: [] };
-      c.yen += price; c.games += 1; c.list.push(i);
+      const c = out.get(n) || { yen: 0, games: 0 };
+      c.yen += price; c.games += 1;
       out.set(n, c);
     });
   });
@@ -317,11 +312,9 @@ function renderCosts() {
   document.getElementById('costs').replaceChildren(...sorted.map(([n, v]) =>
     el('div', { className: v.games ? 'row' : 'row off' },
       el('b', { textContent: n }),
-      el('span', { className: 'row-games', textContent: `${v.games}試合` }),
-      el('span', { className: 'row-yen', textContent: `${v.yen.toLocaleString()}円` }),
-      el('div', { className: 'chips-g' }, ...v.list.map(i =>
-        el('span', { className: `chip fmt-${ORDER[i]}`, textContent: `${i + 1} ${FORMATS[ORDER[i]].name}` }))))));
+      el('span', { className: 'row-games', textContent: `{v.games}試合` }))));
 }
+
 function renderChecks() {
   let empty = 0, dups = 0;
   state.games.forEach((names, i) => {
