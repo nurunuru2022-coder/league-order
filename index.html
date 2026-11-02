@@ -42,6 +42,8 @@ select { font-weight: 700; }
 
 .costs { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
 .cost { background: var(--panel); border-top: 3px solid var(--black); padding: 8px 10px; }
+.cost.off { opacity: .45; border-top-color: var(--line); }
+.cost.off span { color: var(--sub); }
 .cost b { display: block; font-size: 13px; color: var(--sub); overflow-wrap: anywhere; }
 .cost span { font-family: var(--num); font-weight: 700; font-size: 28px; color: var(--red); font-variant-numeric: tabular-nums; }
 .cost small { display: block; font-size: 12px; color: var(--sub); }
@@ -287,8 +289,10 @@ function renderGames() {
 
 function renderCosts() {
   const c = costs();
-  document.getElementById('costs').replaceChildren(...[...c].map(([n, v]) =>
-    el('div', { className: 'cost' },
+  // 試合数の多い順（同数なら登録順のまま）。0試合の人も出してグレーにする
+  const sorted = [...c].sort((a, b) => b[1].games - a[1].games);
+  document.getElementById('costs').replaceChildren(...sorted.map(([n, v]) =>
+    el('div', { className: v.games ? 'cost' : 'cost off' },
       el('b', { textContent: n }),
       el('span', { textContent: v.yen.toLocaleString() }),
       el('small', { textContent: `${v.games}試合` }))));
