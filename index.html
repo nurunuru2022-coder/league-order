@@ -6,91 +6,90 @@
 <meta name="robots" content="noindex">
 <title>リーグのオーダー表</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Oswald:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Orbitron:wght@700&display=swap">
 <style>
-/* 上から「コスト→試合→送る文面」。スマホで片手入力、送るボタンは常に画面下 */
+/* 暗い店内の筐体画面。黒地に発光色、数字は電光表示、種目ごとに色分け */
 :root {
-  --bg: #eef2f0; --panel: #ffffff; --ink: #18211e; --sub: #5c6b65; --line: #d3dcd8;
-  --green: #0f6b4f; --green-ink: #ffffff; --red: #c0352b; --soft: #e1ebe6; --warn-bg: #fbe9e6;
-  --jp: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-  --num: "Oswald", "BIZ UDPGothic", sans-serif;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #121a17; --panel: #1b2622; --ink: #e8efec; --sub: #9aaaa3; --line: #31403a;
-    --green: #2fa57f; --green-ink: #06140f; --red: #ef7468; --soft: #243430; --warn-bg: #3a2320;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #121a17; --panel: #1b2622; --ink: #e8efec; --sub: #9aaaa3; --line: #31403a;
-  --green: #2fa57f; --green-ink: #06140f; --red: #ef7468; --soft: #243430; --warn-bg: #3a2320;
   color-scheme: dark;
+  --bg: #07080f; --panel: #12141f; --panel2: #1a1d2c; --ink: #f4f6ff; --sub: #9aa3c0; --line: #2c3146;
+  --red: #ff2442; --blue: #19c8ff; --amber: #ffb81f; --pink: #ff3fb4; --warn-bg: #3a0d18;
+  --jp: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --num: "Orbitron", "BIZ UDPGothic", sans-serif;
 }
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font-family: var(--jp); font-size: 16px; line-height: 1.5; }
+body {
+  color: var(--ink); font-family: var(--jp); font-size: 16px; line-height: 1.5;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle at 50% -80px, rgba(255, 36, 66, .32), transparent 340px),
+    repeating-conic-gradient(from 9deg at 50% 60px, rgba(255, 255, 255, .025) 0 18deg, transparent 18deg 36deg);
+  background-repeat: no-repeat;
+}
 .wrap {
-  max-width: 640px; margin: 0 auto; display: grid; gap: 20px;
-  padding-block: 20px 110px;
+  max-width: 640px; margin: 0 auto; display: grid; gap: 22px;
+  padding-block: 22px 120px;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
-h1 { margin: 0; font-size: 22px; }
-h2 { margin: 0 0 8px; font-size: 15px; color: var(--sub); font-weight: 700; }
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+h1 { margin: 0; font-size: 24px; letter-spacing: .04em; font-style: italic; text-shadow: 0 0 14px rgba(255, 36, 66, .9); }
+h2 { margin: 0 0 8px; font-size: 14px; color: var(--blue); letter-spacing: .12em; }
 label.date { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--sub); }
 input, select, textarea, button { font: inherit; color: var(--ink); }
-input, select { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 9px 8px; min-height: 44px; width: 100%; min-width: 0; }
+input, select { background: var(--panel2); border: 1px solid var(--line); border-radius: 4px; padding: 9px 8px; min-height: 44px; width: 100%; min-width: 0; }
+select { font-weight: 700; }
 label.date input { width: auto; }
-:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
 
-.notice { background: var(--soft); border-radius: 6px; padding: 10px 12px; font-size: 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.notice { background: var(--panel2); border-left: 3px solid var(--amber); padding: 10px 12px; font-size: 14px; }
 
-.costs { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 8px; }
-.cost { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
-.cost b { display: block; font-size: 13px; font-weight: 400; color: var(--sub); overflow-wrap: anywhere; }
-.cost span { font-family: var(--num); font-size: 24px; font-variant-numeric: tabular-nums; }
+.costs { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+.cost { background: linear-gradient(160deg, #1f2336, #0d0f18); border: 1px solid var(--line); border-top: 2px solid var(--red); border-radius: 4px; padding: 8px 10px; }
+.cost b { display: block; font-size: 13px; color: var(--sub); overflow-wrap: anywhere; }
+.cost span { font-family: var(--num); font-weight: 700; font-size: 25px; color: var(--amber); font-variant-numeric: tabular-nums; text-shadow: 0 0 10px rgba(255, 184, 31, .65); }
 .cost small { display: block; font-size: 12px; color: var(--sub); }
-.total { margin: 8px 0 0; text-align: right; font-size: 14px; color: var(--sub); font-variant-numeric: tabular-nums; }
+.total { margin: 8px 0 0; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
 
 .games { display: grid; gap: 8px; }
-.game { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--green); padding: 10px 12px; display: grid; gap: 8px; }
-.game.bad { border-left-color: var(--red); background: var(--warn-bg); }
-.game-head { display: flex; align-items: baseline; gap: 8px; }
-.game-no { font-family: var(--num); color: var(--sub); font-variant-numeric: tabular-nums; min-width: 1.6em; }
+.game { --c: var(--red); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 0 12px 12px; display: grid; gap: 10px; overflow: hidden; }
+.fmt-T { --c: var(--pink); }
+.fmt-C, .fmt-K { --c: var(--blue); }
+.fmt-F { --c: var(--amber); }
+.game.bad { border-color: var(--red); background: var(--warn-bg); }
+.game-head { display: flex; align-items: center; gap: 10px; margin: 0 -12px; padding: 7px 12px; background: linear-gradient(90deg, color-mix(in srgb, var(--c) 34%, transparent), transparent 80%); border-bottom: 1px solid var(--c); }
+.game-no { font-family: var(--num); font-weight: 700; color: var(--c); font-size: 18px; min-width: 1.5em; text-shadow: 0 0 8px var(--c); font-variant-numeric: tabular-nums; }
 .game-name { font-weight: 700; flex: 1; min-width: 0; }
 .game-price { font-size: 13px; color: var(--sub); white-space: nowrap; }
 .slots { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
 .slot { display: grid; gap: 4px; min-width: 0; }
-.dup { margin: 0; font-size: 13px; color: var(--red); }
+.dup { margin: 0; font-size: 13px; font-weight: 700; color: var(--red); }
 
-.preview { width: 100%; min-height: 220px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px; resize: vertical; font-size: 14px; line-height: 1.6; }
+.preview { width: 100%; min-height: 220px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 10px; resize: vertical; font-size: 14px; line-height: 1.6; }
 
-details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+details { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; }
 summary { cursor: pointer; font-weight: 700; min-height: 28px; }
 .settings { display: grid; gap: 16px; padding-top: 12px; }
 .prices { display: grid; gap: 8px; }
 .price { display: grid; grid-template-columns: 1fr 96px; gap: 8px; align-items: center; font-size: 14px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0 0 8px; padding: 0; }
-.chips li { display: flex; align-items: center; gap: 4px; background: var(--soft); border-radius: 6px; padding: 2px 2px 2px 10px; font-size: 14px; }
+.chips li { display: flex; align-items: center; gap: 4px; background: var(--panel2); border-radius: 4px; padding: 2px 2px 2px 10px; font-size: 14px; }
 .add { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
 
-button { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 8px 12px; min-height: 44px; cursor: pointer; }
+button { border: 1px solid var(--line); background: var(--panel2); border-radius: 4px; padding: 8px 12px; min-height: 44px; cursor: pointer; overflow-wrap: anywhere; }
 button.x { border: 0; background: none; min-height: 36px; min-width: 36px; padding: 0; color: var(--sub); }
 .clear { justify-self: start; }
 
 .bar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
-  background: var(--panel); border-top: 1px solid var(--line);
+  background: rgba(7, 8, 15, .94); border-top: 1px solid var(--red);
   padding-top: 10px;
   padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 .bar-in { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
-.send { display: flex; align-items: center; justify-content: center; min-height: 46px; border-radius: 6px; background: var(--green); color: var(--green-ink); font-weight: 700; text-decoration: none; text-align: center; padding: 8px; }
+.send { display: flex; align-items: center; justify-content: center; min-height: 46px; border-radius: 4px; background: linear-gradient(180deg, #ff4560, #d40f2e); color: #fff; font-weight: 700; text-decoration: none; text-align: center; padding: 8px; box-shadow: 0 0 16px rgba(255, 36, 66, .7); }
 .status { grid-column: 1 / -1; font-size: 13px; color: var(--sub); }
-.status.bad { color: var(--red); }
+.status.bad { color: var(--red); font-weight: 700; }
 </style>
 <style>body{margin:0}[hidden]{display:none!important}</style>
 </head>
@@ -99,7 +98,7 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
 
 <div class="wrap">
   <header>
-    <h1>リーグのオーダー表</h1>
+    <h1>LEAGUE ORDER</h1>
     <label class="date">試合日 <input type="date" id="date"></label>
   </header>
 
@@ -275,7 +274,7 @@ function renderGames() {
     const slots = el('div', { className: 'slots' });
     state.games[i].forEach((_, j) => slots.append(renderSlot(i, j)));
     const dup = el('p', { className: 'dup', id: `d${i}`, hidden: true, textContent: '同じ人が2回入っています' });
-    return el('div', { className: 'game', id: `g${i}` }, head, slots, dup);
+    return el('div', { className: `game fmt-${f}`, id: `g${i}` }, head, slots, dup);
   }));
 }
 
