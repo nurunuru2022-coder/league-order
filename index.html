@@ -92,35 +92,8 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 .bar-in { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
-/* 送るボタン: JAPAN ELITE 360 風。白地に赤と青の煙が右へ流れ、ダーツが風を切って飛ぶ。文字は斜体の太字で赤・青・黒 */
-.send {
-  position: relative; display: flex; align-items: center; justify-content: center; gap: .35em;
-  min-height: 52px; border-radius: 6px; overflow: hidden; text-decoration: none; padding: 8px 56px 8px 16px;
-  border: 1px solid var(--line);
-  background:
-    radial-gradient(60% 120% at 100% 50%, rgba(228, 35, 43, .55), transparent 70%),
-    radial-gradient(45% 100% at 88% 20%, rgba(27, 95, 193, .55), transparent 70%),
-    radial-gradient(50% 90% at 70% 90%, rgba(27, 95, 193, .25), transparent 70%),
-    linear-gradient(100deg, #fff 0 55%, #eef3fb 100%);
-  font-family: var(--num); font-size: 20px; font-style: italic; font-weight: 700; letter-spacing: .06em;
-}
-.send::before {
-  /* 風を切る筋 */
-  content: ""; position: absolute; inset: 0;
-  background: repeating-linear-gradient(100deg, transparent 0 14px, rgba(255, 255, 255, .55) 14px 16px);
-  mask: linear-gradient(90deg, transparent 40%, #000 90%);
-  -webkit-mask: linear-gradient(90deg, transparent 40%, #000 90%);
-}
-.send .dart {
-  /* 飛ぶダーツ（左向き、右から流れてくる） */
-  position: absolute; right: 8px; top: 50%; width: 40px; height: 10px; transform: translateY(-50%) rotate(-8deg);
-  animation: fly 1.6s ease-in-out infinite;
-}
-.send .dart::before { content: ""; position: absolute; left: 0; top: 4px; width: 32px; height: 2px; background: #1c1c1c; }
-.send .dart::after { content: ""; position: absolute; right: 0; top: 0; border-style: solid; border-width: 5px 0 5px 14px; border-color: transparent transparent transparent var(--red); }
-@keyframes fly { 0%, 100% { transform: translate(0, -50%) rotate(-8deg); } 50% { transform: translate(-6px, -50%) rotate(-8deg); } }
-@media (prefers-reduced-motion: reduce) { .send .dart { animation: none; } }
-.send .r { color: var(--red); } .send .b { color: var(--blue); } .send .k { color: var(--black); font-size: 15px; letter-spacing: .14em; font-style: normal; }
+/* 送るボタン: LINEの緑 */
+.send { display: flex; align-items: center; justify-content: center; min-height: 50px; border-radius: 999px; background: #06C755; color: #fff; font-weight: 700; font-size: 17px; text-decoration: none; text-align: center; padding: 8px 20px; }
 .status { grid-column: 1 / -1; font-size: 13px; color: var(--sub); }
 .status.bad { color: var(--red); font-weight: 700; }
 </style>
@@ -183,7 +156,7 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
 <div class="bar">
   <div class="bar-in">
     <div class="status" id="status" role="status"></div>
-    <a class="send" id="send" href="#" target="_blank" rel="noopener"><span class="r">LINE</span><span class="b">で</span><span class="k">送る</span><span class="dart" aria-hidden="true"></span></a>
+    <a class="send" id="send" href="#" target="_blank" rel="noopener">LINEで送る</a>
     <button type="button" id="copy">文面をコピー</button>
   </div>
 </div>
