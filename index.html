@@ -24,13 +24,11 @@ body { background: var(--bg); color: var(--ink); font-family: var(--jp); font-si
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
-header {
-  margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 0 calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
-  background: var(--black); color: #fff; padding: 16px max(16px, env(safe-area-inset-left, 0px));
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;
-  border-bottom: 4px solid var(--red);
-}
-h1 { margin: 0; font-family: var(--num); font-weight: 700; font-size: 28px; letter-spacing: .08em; text-transform: uppercase; }
+/* 見出し: 白地に黒文字のロゴ帯 → その下に黒い帯で試合日（JAPAN公式の並び） */
+header { margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 0 calc(-1 * max(16px, env(safe-area-inset-right, 0px))); display: grid; }
+.logo { background: #fff; padding: 16px max(16px, env(safe-area-inset-left, 0px)); }
+.bar-date { background: var(--black); color: #fff; padding: 12px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 4px solid var(--red); display: flex; align-items: center; gap: 10px 16px; }
+h1 { margin: 0; font-family: var(--num); font-weight: 700; font-size: 28px; letter-spacing: .08em; text-transform: uppercase; color: var(--black); }
 h1::before { content: ""; display: inline-block; width: 10px; height: 26px; background: linear-gradient(180deg, var(--red) 50%, var(--blue) 50%); margin-right: 10px; vertical-align: -3px; transform: skewX(-12deg); }
 h2 { margin: 0 0 10px; font-family: var(--num); font-size: 22px; letter-spacing: .06em; text-transform: uppercase; }
 label.date { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #ddd; }
@@ -106,8 +104,8 @@ button.x { border: 0; background: none; min-height: 36px; min-width: 36px; paddi
 
 <div class="wrap">
   <header>
-    <h1>LEAGUE ORDER</h1>
-    <label class="date">試合日 <input type="date" id="date"></label>
+    <div class="logo"><h1>LEAGUE ORDER</h1></div>
+    <div class="bar-date"><label class="date">試合日 <input type="date" id="date"></label></div>
   </header>
 
   <div class="notice" id="noMembers" hidden>
